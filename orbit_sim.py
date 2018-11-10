@@ -1,7 +1,9 @@
 """This is an improvement on hackathon_stable_5.py
 The physics engine computes the location independent of update() and then the data can be selectively animted with FuncAnimation
 The angle theta problem is FIXED
+True Newtonian physics is turned ON, and the bug that causes very little acceleration is FIXED
 There's still hardcode to be done on line 96... help?
+last edited by DY on 09/11/2018
 """
 
 import numpy as np
@@ -14,12 +16,12 @@ import sys
 # everything time related are in seconds
 global sim_time, animation_start, animation_end, dt
 sim_time = int(1e9)
-dt = int(7200)
-animation_start = 1e7
+dt = int(3600)
+animation_start = 0
 animation_end = sim_time
-frame_skip = 0              # number of frames skipped per each frame
-laser_power = 1e18
-burn_time = 1000000
+frame_skip = 10              # number of frames skipped per each frame
+laser_power = 1e17
+burn_time = 100000000
 
 class point():
     """returns an object that is a list of two dimensional 'vectors'
@@ -48,7 +50,7 @@ def calculate_single_body_acceleration(bodies, body_index, n, laser_power, burn_
     acceleration = point(0,0)    #initializing a zero acceleration vector
     target_body = bodies[body_index]
     for index, other_body in enumerate(bodies):    #gives a list like [(1,sun),(2,earth),....]
-        if index == 0 and index != body_index:     # this hack turns off physics between all bodies except sun
+        if index != body_index:     # the hack that only runs the physics of the Sun is turned off
             r = math.sqrt((target_body.location.x - other_body.location.x)**2 + (target_body.location.y - other_body.location.y)**2)
             try:
                 temp_acc = (g_constant * other_body.mass)/r**3    #this value multiplied by the distance in 1 dimension will give the acceleration
@@ -56,8 +58,8 @@ def calculate_single_body_acceleration(bodies, body_index, n, laser_power, burn_
                 print ("ZeroDivisionError occured in computing acceleration: r = 0")
                 temp_acc = 0
 
-            acceleration.x = temp_acc*(other_body.location.x - target_body.location.x)
-            acceleration.y = temp_acc*(other_body.location.y - target_body.location.y)
+            acceleration.x += temp_acc*(other_body.location.x - target_body.location.x)         # bug is fixed. acceleration was not additive
+            acceleration.y += temp_acc*(other_body.location.y - target_body.location.y)
         else:
             pass
     if target_body.name == "asteroid":
@@ -126,7 +128,7 @@ def compute_gravity_step(bodies, n, dt, laser_power, burn_time):
     calculate_position(bodies, dt)
 
 
-sun = {"location":point(0,0), "mass":2e30, "velocity":point(0,0)}
+sun = {"location":point(0,0), "mass":2e30, "velocity":point(0,0)}     #sun mass = 2e30
 mercury = {"location":point(0,5.7e10), "mass":3.285e23, "velocity":point(47000,0)}
 venus = {"location":point(0,1.1e11), "mass":4.8e24, "velocity":point(35000,0)}
 earth = {"location":point(-9.124e10,-7.830e10), "mass":6e24, "velocity":point(-2.629e4,2.417e4)}

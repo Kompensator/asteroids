@@ -7,7 +7,7 @@ Changes to Hackathon file:
 - Can now animate a slice of the simulation
 - Weird angle bug is FIXED!! (there's some hardcoding to be done on line 96)
 - the ability to skip a certain number of frames to make animation run faster without compromising simulation
-
+- True Newtonian physics is turned ON. The bug that prevented it from working at the hackathon was FIXED.
 
 Upcoming changes:
 - Entering burn_time, laser_power and other settings at runtime
