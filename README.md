@@ -10,6 +10,7 @@ Changes to Hackathon file:
 - True Newtonian physics is turned ON. The bug that prevented it from working at the hackathon was FIXED.
 - More planets are been simulated and animated
 - Dark background
+- Added progress bar
 
 Upcoming changes:
 - Entering burn_time, laser_power and other settings at runtime

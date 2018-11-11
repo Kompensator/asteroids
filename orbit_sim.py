@@ -3,7 +3,7 @@ The physics engine computes the location independent of update() and then the da
 The angle theta problem is FIXED
 True Newtonian physics is turned ON, and the bug that causes very little acceleration is FIXED
 There's still hardcode to be done on line 96... help?
-last edited by DY on 09/11/2018
+last edited by DY on 11/11/2018
 """
 
 import numpy as np
@@ -20,7 +20,7 @@ dt = int(3600)
 animation_start = 0
 animation_end = sim_time
 frame_skip = 5              # number of frames skipped per each frame
-laser_power = 1e20
+laser_power = 1e17
 burn_time = 1000000
 
 class point():
@@ -29,7 +29,6 @@ class point():
     def __init__(self, x, y):
         self.x = x
         self.y = y
-
 
 class body():
     """return a body that has a location (2d vector), mass, velocity, name
@@ -57,7 +56,6 @@ def calculate_single_body_acceleration(bodies, body_index, n, laser_power, burn_
             except ZeroDivisionError:
                 print ("ZeroDivisionError occured in computing acceleration: r = 0")
                 temp_acc = 0
-
             acceleration.x += temp_acc*(other_body.location.x - target_body.location.x)         # bug is fixed. acceleration was not additive
             acceleration.y += temp_acc*(other_body.location.y - target_body.location.y)
         else:
@@ -127,8 +125,14 @@ def compute_gravity_step(bodies, n, dt, laser_power, burn_time):
     calculate_velocity(bodies, n, dt, laser_power, burn_time)
     calculate_position(bodies, dt)
 
+def progress_bar(count, total):
+    bar_length = 60
+    filled_length = int(round(bar_length*count/total))
+    percentage = round(100*(count/total))
+    bar = '='*filled_length + '-'*(bar_length-filled_length)
+    print("%s  %s%s" %(bar,percentage,'%'), end='\r')
 
-sun = {"location":point(0,0), "mass":2e30, "velocity":point(0,0)}     #sun mass = 2e30
+sun = {"location":point(0,0), "mass":2e32, "velocity":point(0,0)}     #sun mass = 2e30
 mercury = {"location":point(0,5.7e10), "mass":3.285e23, "velocity":point(47000,0)}
 venus = {"location":point(0,1.1e11), "mass":4.8e24, "velocity":point(35000,0)}
 earth = {"location":point(-9.124e10,-7.830e10), "mass":6e24, "velocity":point(-2.629e4,2.417e4)}
@@ -205,6 +209,7 @@ def main(laser_power=1e18, burn_time=100000000):
     frames = int(sim_time//dt)
     for t in range(0,frames):
         compute_gravity_step(bodies, t, dt, laser_power, burn_time)
+        progress_bar(t,frames)
 
     ani = FuncAnimation(fig, update, interval=1, blit=True)
     plt.show()
