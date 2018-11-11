@@ -15,13 +15,13 @@ import sys
 #settings
 # everything time related are in seconds
 global sim_time, animation_start, animation_end, dt
-sim_time = int(1e9)
+sim_time = int(1e8)
 dt = int(3600)
 animation_start = 0
 animation_end = sim_time
-frame_skip = 10              # number of frames skipped per each frame
-laser_power = 1e17
-burn_time = 100000000
+frame_skip = 5              # number of frames skipped per each frame
+laser_power = 1e20
+burn_time = 1000000
 
 class point():
     """returns an object that is a list of two dimensional 'vectors'
@@ -143,24 +143,29 @@ asteroid = {"location":point(-7.133e10,-1.159e11),"mass":27e9,"velocity":point(-
 bodies = [
         body( location = sun["location"], mass = sun["mass"], velocity = sun["velocity"], name = "sun"),
         body( location = earth["location"], mass = earth["mass"], velocity = earth["velocity"], name = "earth"),
-        body( location = asteroid["location"], mass = asteroid["mass"], velocity = asteroid["velocity"], name = "asteroid")]
-        #body( location = mars["location"], mass = mars["mass"], velocity = mars["velocity"], name = "mars"),
-        #body( location = venus["location"], mass = venus["mass"], velocity = venus["velocity"], name = "venus"),
-        #body( location = jupiter["location"], mass = jupiter["mass"], velocity = jupiter["velocity"], name = "jupiter"),
-        #body( location = mercury["location"], mass = mercury["mass"], velocity = mercury["velocity"], name = "mercury")]
+        body( location = asteroid["location"], mass = asteroid["mass"], velocity = asteroid["velocity"], name = "asteroid"),
+        body( location = mars["location"], mass = mars["mass"], velocity = mars["velocity"], name = "mars"),
+        body( location = venus["location"], mass = venus["mass"], velocity = venus["velocity"], name = "venus"),
+        body( location = jupiter["location"], mass = jupiter["mass"], velocity = jupiter["velocity"], name = "jupiter"),
+        body( location = mercury["location"], mass = mercury["mass"], velocity = mercury["velocity"], name = "mercury")]
 
 
 fig, ax = plt.subplots()
-ax.set_xlim(-5e11, 5e11)
-ax.set_ylim(-5e11, 5e11)
+ax.set_facecolor('xkcd:black')
+ax.set_xlim(-1e12, 1e12)
+ax.set_ylim(-1e12, 1e12)
 
 global rock_plot, trace, sun_plot, earth_plot, text
 rock_plot, = plt.plot([],[],'ro',markersize=6, animated=True)
-trace, = plt.plot([],[],'bo', markersize=0.01, animated=True)
+trace, = plt.plot([],[],'bo', markersize=0.1, animated=True)
 sun_plot, = plt.plot([],[],'yo',markersize=12, animated=True)
-earth_plot, = plt.plot([],[], "go", markersize=6, animated=True)
-text = ax.text(0, 0, '', transform = ax.transAxes,fontsize = 10)
+earth_plot, = plt.plot([],[], color='#2b63d8',marker='o',markerfacecolor='#2b63d8', markersize=7, animated=True)
+mars_plot, = plt.plot([],[], color='#f58061',marker='o',markerfacecolor='#f58061', markersize=6, animated=True)
+venus_plot, = plt.plot([],[], color="#c28033", marker='o',markerfacecolor='#c28033',markersize=5, animated=True)
+mercury_plot, = plt.plot([],[], color="#d5d2d1", marker='o',markerfacecolor='#d5d2d1',markersize=4, animated=True)
+jupiter_plot, = plt.plot([],[], color='#efd9a7',marker='o',markerfacecolor='#efd9a7',markersize=11, animated=True)
 
+text = ax.text(0, 0, '', color="white", transform=ax.transAxes,fontsize=10)
 
 def update(frame):
     start_frame = animation_start//dt
@@ -179,6 +184,14 @@ def update(frame):
             sun_plot.set_data(x_data,y_data)
         elif body.name == "earth":
             earth_plot.set_data(x_data,y_data)
+        elif body.name == "mars":
+            mars_plot.set_data(x_data,y_data)
+        elif body.name == 'venus':
+            venus_plot.set_data(x_data,y_data)
+        elif body.name == 'jupiter':
+            jupiter_plot.set_data(x_data,y_data)
+        elif body.name == 'mercury':
+            mercury_plot.set_data(x_data,y_data)
 
     trace_x, trace_y = [],[]
     for body in bodies:
@@ -186,7 +199,7 @@ def update(frame):
         trace_y.append(body.y_hist[0:frame])
     trace.set_data(trace_x,trace_y)
     text.set_text(str("Time elapsed: "+ str(frame*4)+" hours"))
-    return rock_plot, sun_plot, trace, earth_plot, text
+    return rock_plot, sun_plot, trace, earth_plot, mars_plot, venus_plot, jupiter_plot,mercury_plot, text
 
 def main(laser_power=1e18, burn_time=100000000):
     frames = int(sim_time//dt)

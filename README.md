@@ -8,8 +8,9 @@ Changes to Hackathon file:
 - Weird angle bug is FIXED!! (there's some hardcoding to be done on line 96)
 - the ability to skip a certain number of frames to make animation run faster without compromising simulation
 - True Newtonian physics is turned ON. The bug that prevented it from working at the hackathon was FIXED.
+- More planets are been simulated and animated
+- Dark background
 
 Upcoming changes:
 - Entering burn_time, laser_power and other settings at runtime
 - Accepts polar coordinates as initial data (physics will still run with pseudo integration, no plan to use Keplerian orbits to this file)
-- Better aesthetics
