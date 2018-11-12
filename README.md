@@ -1,6 +1,6 @@
 # asteroids
 Simulating deflection of an asteroid on a collision course with Earth using lasers and other means.
-Changes to Hackathon file:
+Changes (newest last)
 - Physics simulation is running first and it's independent to FuncAnimation
 - Useless printing is deleted
 - Structural changes in main()
@@ -10,7 +10,7 @@ Changes to Hackathon file:
 - True Newtonian physics is turned ON. The bug that prevented it from working at the hackathon was FIXED.
 - More planets are been simulated and animated
 - Dark background
-- Added progress bar
+- Added progress bar (optimized to reduce its affect on performance)
 
 Upcoming changes:
 - Entering burn_time, laser_power and other settings at runtime

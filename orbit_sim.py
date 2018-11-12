@@ -11,11 +11,13 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 import math
 import sys
+from datetime import datetime
+import time
 
 #settings
 # everything time related are in seconds
 global sim_time, animation_start, animation_end, dt
-sim_time = int(1e8)
+sim_time = int(1e10)
 dt = int(3600)
 animation_start = 0
 animation_end = sim_time
@@ -132,7 +134,7 @@ def progress_bar(count, total):
     bar = '='*filled_length + '-'*(bar_length-filled_length)
     print("%s  %s%s" %(bar,percentage,'%'), end='\r')
 
-sun = {"location":point(0,0), "mass":2e32, "velocity":point(0,0)}     #sun mass = 2e30
+sun = {"location":point(0,0), "mass":2e30, "velocity":point(0,0)}     #sun mass = 2e30
 mercury = {"location":point(0,5.7e10), "mass":3.285e23, "velocity":point(47000,0)}
 venus = {"location":point(0,1.1e11), "mass":4.8e24, "velocity":point(35000,0)}
 earth = {"location":point(-9.124e10,-7.830e10), "mass":6e24, "velocity":point(-2.629e4,2.417e4)}
@@ -206,10 +208,17 @@ def update(frame):
     return rock_plot, sun_plot, trace, earth_plot, mars_plot, venus_plot, jupiter_plot,mercury_plot, text
 
 def main(laser_power=1e18, burn_time=100000000):
+    sim_start = datetime.now()
+    start_second = time.time()
+    print ("Physics simulation started at %s" %(sim_start))
     frames = int(sim_time//dt)
     for t in range(0,frames):
         compute_gravity_step(bodies, t, dt, laser_power, burn_time)
-        progress_bar(t,frames)
+        if t%(int(frames/100)) == 0:        # this hack makes the whole program run 45% faster!!
+            progress_bar(t,frames)
+    sim_end = datetime.now()
+    end_second = time.time()
+    print ("Physics simulation ended at %s, time elapsed = %s seconds" %(sim_end,round(end_second-start_second)))
 
     ani = FuncAnimation(fig, update, interval=1, blit=True)
     plt.show()
