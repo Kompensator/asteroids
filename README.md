@@ -11,6 +11,7 @@ Changes (newest last)
 - More planets are been simulated and animated
 - Dark background
 - Added progress bar (optimized to reduce its affect on performance)
+- FIXED: bug that makes the laser burn forver
 
 Upcoming changes:
 - Entering burn_time, laser_power and other settings at runtime
