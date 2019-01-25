@@ -7,7 +7,6 @@ Bug that makes the laser burn forever is fixed
 last edited by DY on 19/1/2019
 """
 
-import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 import math
@@ -21,7 +20,7 @@ import sys
 
 # settings
 # everything time related are in seconds
-sim_time = int(1e8)
+sim_time = int(1e9)
 dt = int(3600)
 animation_start = 0
 animation_end = sim_time
@@ -100,9 +99,9 @@ def laser_acc(bodies, n, laser_power, burn_time):
                 if delta_x > 0 and delta_y > 0:             # extreme hardcoding
                     theta = math.atan(delta_y/delta_x)
                 elif delta_x < 0 and delta_y > 0:
-                    theta = np.pi - math.atan(delta_y/abs(delta_x))
+                    theta = 3.1415926535 - math.atan(delta_y/abs(delta_x))
                 elif delta_x < 0 and delta_y < 0:
-                    theta = np.pi + math.atan(abs(delta_y)/abs(delta_x))
+                    theta = 3.1415926535 + math.atan(abs(delta_y)/abs(delta_x))
                 elif delta_x > 0 and delta_y < 0:
                     theta = -1*math.atan(abs(delta_y)/delta_x)
                 else:
@@ -152,7 +151,11 @@ def progress_bar(count, total):
     print("%s  %s  %s%s" % (bar, "physics running: ", percentage, '%'), end='\r')
 
 
+<<<<<<< HEAD
 sun = {"location": point(0, 0), "mass": 3e30, "velocity": point(0, 0)}  # sun mass = 2e30
+=======
+sun = {"location": point(0, 0), "mass": 2e31, "velocity": point(10000, 0)}  # sun mass = 2e30
+>>>>>>> a79a37b82eb60f3fd32a30132bb27a4e4f10d50e
 mercury = {"location": point(0, 5.7e10), "mass": 3.285e23, "velocity": point(47000, 0)}
 venus = {"location": point(0, 1.1e11), "mass": 4.8e24, "velocity": point(35000, 0)}
 earth = {"location": point(-9.124e10, -7.830e10), "mass": 6e24,
