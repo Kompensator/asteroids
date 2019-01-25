@@ -151,7 +151,7 @@ def progress_bar(count, total):
     print("%s  %s  %s%s" % (bar, "physics running: ", percentage, '%'), end='\r')
 
 
-sun = {"location": point(0, 0), "mass": 2e30, "velocity": point(1000, 0)}  # sun mass = 2e30
+sun = {"location": point(0, 0), "mass": 2e31, "velocity": point(10000, 0)}  # sun mass = 2e30
 mercury = {"location": point(0, 5.7e10), "mass": 3.285e23, "velocity": point(47000, 0)}
 venus = {"location": point(0, 1.1e11), "mass": 4.8e24, "velocity": point(35000, 0)}
 earth = {"location": point(-9.124e10, -7.830e10), "mass": 6e24,
