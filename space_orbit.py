@@ -19,7 +19,7 @@ sim_time = 1e8
 dt = 3600          # each tick of simultation
 animation_start = 0     # displaying a slice of the whole simulation
 animation_end = sim_time
-frame_skip = 40              # number of frames skipped per each frame showed      default = 5
+frame_skip = 15              # number of frames skipped per each frame showed      default = 20
 global burn_time
 laser_power = float(input("Enter desired laser power > "))
 burn_time = float(input("Enter laser burn time > "))
@@ -104,9 +104,9 @@ def laser_acc(bodies, n, laser_power, burn_time):
                 acc_x = (math.cos(theta)*laser_force)/body.mass
                 acc_y = (math.sin(theta)*laser_force)/body.mass
                 return acc_x, acc_y
-            elif n == number_of_time_intervals:
-                print("Burn finished!")  # optional
-                return 0, 0
+            # elif n == number_of_time_intervals:
+            #     print("Burn finished!")  # optional
+            #     return 0, 0
             else:
                 return 0, 0
         else:
