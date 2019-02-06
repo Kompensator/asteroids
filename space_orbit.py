@@ -1,10 +1,5 @@
-"""This is an improvement on hackathon_stable_5.py
-The physics engine computes the location independent of update() and then the data can be selectively animted with FuncAnimation
-The angle theta problem is FIXED
-True Newtonian physics is turned ON, and the bug that causes very little acceleration is FIXED
-There's still hardcode to be done on line 96... help?
-Bug that makes the laser burn forever is fixed
-last edited by DY on 19/1/2019
+""" 
+Copy of orbit_sim.py used for SPACE presentation on Feb 06 2019
 """
 
 import matplotlib.pyplot as plt
@@ -24,9 +19,10 @@ sim_time = 1e8
 dt = 3600          # each tick of simultation
 animation_start = 0     # displaying a slice of the whole simulation
 animation_end = sim_time
-frame_skip = 5              # number of frames skipped per each frame displayed
-laser_power = 1e19 
-burn_time = 100000000
+frame_skip = 40              # number of frames skipped per each frame showed      default = 5
+global burn_time
+laser_power = float(input("Enter desired laser power > "))
+burn_time = float(input("Enter laser burn time > "))
 
 
 class point():
@@ -201,6 +197,12 @@ def update(frame):
     start_frame = animation_start//dt
     end_frame = animation_end//dt
     frame = frame*(frame_skip+1) + int(start_frame)
+    collision_status = detect_collision(bodies, frame)
+    if collision_status == True:
+        print ("Collision! Asteroid within earth's sphere of influence!")
+        print (str(frame//24)+" days after the beginning of simulation")
+        sys.exit(0)
+
     if frame == end_frame:
         print("Animation finished: start = %ds   end = %ds " % (animation_start, animation_end))
         sys.exit(0)
@@ -228,8 +230,24 @@ def update(frame):
         trace_x.append(body.x_hist[0:frame])
         trace_y.append(body.y_hist[0:frame])
     trace.set_data(trace_x, trace_y)
-    text.set_text(str("Time elapsed: " + str(1*frame)+" hours"))      # change the multiplier of frame to match dt!!!
+    if burn_time > frame:
+        text.set_text(str("Time elapsed: " + str(frame//24)+" days. Burning laser!"))      # since dt is 3600s = 1h, no multiplier for 'frame'
+    else:
+        text.set_text(str("Time elapsed: " + str(frame//24)+" days. Burn finished!"))       # the prompt shows time in days instead of hours, in this version
     return rock_plot, sun_plot, trace, earth_plot, mars_plot, venus_plot, jupiter_plot, mercury_plot, text
+
+
+def detect_collision(bodies, frame):
+    planet_earth, evil_asteroid = bodies[1], bodies[2]
+    earth_x = planet_earth.x_hist[frame]
+    earth_y = planet_earth.y_hist[frame]
+    asteroid_x = evil_asteroid.x_hist[frame]
+    asteroid_y = evil_asteroid.y_hist[frame]
+    distance = ((earth_x - asteroid_x)**2 + (earth_y - asteroid_y)**2)**0.5
+    if distance > 1.5e9:
+        return False
+    else:
+        return True
 
 
 def main(sim_time, animation_start, animation_end, dt, laser_power=1e18, burn_time=100000000):
@@ -252,5 +270,3 @@ def main(sim_time, animation_start, animation_end, dt, laser_power=1e18, burn_ti
 
 if __name__ == '__main__':
     main(sim_time, animation_start, animation_end, dt, laser_power, burn_time)
-    # main(laser_power, burn_time)
-    # profile.run(main())
