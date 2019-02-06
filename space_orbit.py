@@ -19,8 +19,7 @@ sim_time = 1e8
 dt = 3600          # each tick of simultation
 animation_start = 0     # displaying a slice of the whole simulation
 animation_end = sim_time
-frame_skip = 15              # number of frames skipped per each frame showed      default = 20
-global burn_time
+frame_skip = 15              # number of frames skipped per each frame showed      default = 15
 laser_power = float(input("Enter desired laser power > "))
 burn_time = float(input("Enter laser burn time > "))
 
@@ -230,7 +229,7 @@ def update(frame):
         trace_x.append(body.x_hist[0:frame])
         trace_y.append(body.y_hist[0:frame])
     trace.set_data(trace_x, trace_y)
-    if burn_time > frame:
+    if burn_time > frame*dt:
         text.set_text(str("Time elapsed: " + str(frame//24)+" days. Burning laser!"))      # since dt is 3600s = 1h, no multiplier for 'frame'
     else:
         text.set_text(str("Time elapsed: " + str(frame//24)+" days. Burn finished!"))       # the prompt shows time in days instead of hours, in this version
