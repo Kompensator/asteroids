@@ -15,4 +15,3 @@ Changes (newest last)
 
 Upcoming changes:
 - Entering burn_time, laser_power and other settings at runtime
-- Accepts polar coordinates as initial data (physics will still run with pseudo integration, no plan to use Keplerian orbits to this file)
