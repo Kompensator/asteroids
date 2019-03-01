@@ -1,10 +1,5 @@
-"""This is an improvement on hackathon_stable_5.py
-The physics engine computes the location independent of update() and then the data can be selectively animted with FuncAnimation
-The angle theta problem is FIXED
-True Newtonian physics is turned ON, and the bug that causes very little acceleration is FIXED
-There's still hardcode to be done on line 96... help?
-Bug that makes the laser burn forever is fixed
-last edited by DY on 19/1/2019
+""" 
+Copy of orbit_sim.py used for SPACE presentation on Feb 06 2019
 """
 
 import matplotlib.pyplot as plt
@@ -24,9 +19,9 @@ sim_time = 1e8
 dt = 3600          # each tick of simultation
 animation_start = 0     # displaying a slice of the whole simulation
 animation_end = sim_time
-frame_skip = 5              # number of frames skipped per each frame displayed
-laser_power = 1e19 
-burn_time = 100000000
+frame_skip = 15              # number of frames skipped per each frame showed      default = 15
+laser_power = float(input("Enter desired laser power > "))
+burn_time = float(input("Enter laser burn time > "))
 
 
 class point():
@@ -108,9 +103,9 @@ def laser_acc(bodies, n, laser_power, burn_time):
                 acc_x = (math.cos(theta)*laser_force)/body.mass
                 acc_y = (math.sin(theta)*laser_force)/body.mass
                 return acc_x, acc_y
-            elif n == number_of_time_intervals:
-                print("Burn finished!")  # optional
-                return 0, 0
+            # elif n == number_of_time_intervals:
+            #     print("Burn finished!")  # optional
+            #     return 0, 0
             else:
                 return 0, 0
         else:
@@ -149,7 +144,7 @@ def progress_bar(count, total):
     print("%s  %s  %s%s" % (bar, "physics running: ", percentage, '%'), end='\r')
 
 
-sun = {"location": point(0, 0), "mass": 2e30, "velocity": point(0, 0)}  # sun mass = 2e30
+sun = {"location": point(0, 0), "mass": -2e30, "velocity": point(0, 0)}  # sun mass = 2e30
 mercury = {"location": point(0, 5.7e10), "mass": 3.285e23, "velocity": point(47000, 0)}
 venus = {"location": point(0, 1.1e11), "mass": 4.8e24, "velocity": point(35000, 0)}
 earth = {"location": point(-9.124e10, -7.830e10), "mass": 6e24,
@@ -201,6 +196,12 @@ def update(frame):
     start_frame = animation_start//dt
     end_frame = animation_end//dt
     frame = frame*(frame_skip+1) + int(start_frame)
+    collision_status = detect_collision(bodies, frame)
+    if collision_status == True:
+        print ("Collision! Asteroid within earth's sphere of influence!")
+        print (str(frame//24)+" days after the beginning of simulation")
+        sys.exit(0)
+
     if frame == end_frame:
         print("Animation finished: start = %ds   end = %ds " % (animation_start, animation_end))
         sys.exit(0)
@@ -228,8 +229,24 @@ def update(frame):
         trace_x.append(body.x_hist[0:frame])
         trace_y.append(body.y_hist[0:frame])
     trace.set_data(trace_x, trace_y)
-    text.set_text(str("Time elapsed: " + str(1*frame)+" hours"))      # change the multiplier of frame to match dt!!!
+    if burn_time > frame*dt:
+        text.set_text(str("Time elapsed: " + str(frame//24)+" days. Burning laser!"))      # since dt is 3600s = 1h, no multiplier for 'frame'
+    else:
+        text.set_text(str("Time elapsed: " + str(frame//24)+" days. Burn finished!"))       # the prompt shows time in days instead of hours, in this version
     return rock_plot, sun_plot, trace, earth_plot, mars_plot, venus_plot, jupiter_plot, mercury_plot, text
+
+
+def detect_collision(bodies, frame):
+    planet_earth, evil_asteroid = bodies[1], bodies[2]
+    earth_x = planet_earth.x_hist[frame]
+    earth_y = planet_earth.y_hist[frame]
+    asteroid_x = evil_asteroid.x_hist[frame]
+    asteroid_y = evil_asteroid.y_hist[frame]
+    distance = ((earth_x - asteroid_x)**2 + (earth_y - asteroid_y)**2)**0.5
+    if distance > 1.5e9:
+        return False
+    else:
+        return True
 
 
 def main(sim_time, animation_start, animation_end, dt, laser_power=1e18, burn_time=100000000):
@@ -252,5 +269,3 @@ def main(sim_time, animation_start, animation_end, dt, laser_power=1e18, burn_ti
 
 if __name__ == '__main__':
     main(sim_time, animation_start, animation_end, dt, laser_power, burn_time)
-    # main(laser_power, burn_time)
-    # profile.run(main())
