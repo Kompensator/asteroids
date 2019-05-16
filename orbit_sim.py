@@ -20,7 +20,7 @@ import sys
 
 # settings
 # everything time related are in seconds
-sim_time = 1e8
+sim_time = 1e7
 dt = 3600          # each tick of simultation
 animation_start = 0     # displaying a slice of the whole simulation
 animation_end = sim_time
